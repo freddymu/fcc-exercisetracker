@@ -19,11 +19,6 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/views/index.html");
 });
 
-// Not found middleware
-// app.use((req, res, next) => {
-//   return next({ status: 404, message: "not found" });
-// });
-
 // Error Handling middleware
 app.use((err, req, res, next) => {
   let errCode, errMessage;
@@ -123,17 +118,16 @@ app.get("/api/exercise/log", function(req, res) {
   People.findById(userId, function(err, model) {
     if (err) return res.json(err);
 
-    PeopleExercise.find({ date: {$gte:from, $lte:to}})
+    PeopleExercise.find({ date: { $gte: from, $lte: to } })
       .limit(limit)
       .exec(function(err, data) {
         if (err) return res.json(err);
 
         let count = data.length;
-      
+
         let buffers = [];
-      
-        data.forEach(function(element){
-          
+
+        data.forEach(function(element) {
           buffers.push({
             description: element.description,
             duration: element.duration,
@@ -149,6 +143,11 @@ app.get("/api/exercise/log", function(req, res) {
         });
       });
   });
+});
+
+// Not found middleware
+app.use((req, res, next) => {
+  return next({ status: 404, message: "not found" });
 });
 
 const listener = app.listen(process.env.PORT || 3000, () => {
